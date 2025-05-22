@@ -2,6 +2,7 @@
 
 # VSCode
 # .vscode/
+.clang-format
 *.dSYM/
 debug/
 release/
