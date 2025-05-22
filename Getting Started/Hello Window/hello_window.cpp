@@ -42,7 +42,7 @@ int main() {
   }
 
   // Initialize viewport
-  glViewport(0, 0, kWidth, kWidth);
+  glViewport(0, 0, kWidth, kHeight);
 
   // Initialize viewport resizing
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
