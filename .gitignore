@@ -1,11 +1,16 @@
+# Formatting Files
 .DS_Store
+.clang-format
 
 # VSCode
-# .vscode/
-.clang-format
+.vscode/
 *.dSYM/
+
+# Excluded directories
 debug/
 release/
+build/
+external/
 
 # Prerequisites
 *.d
