@@ -14,12 +14,15 @@ const GLint kWidth = 800, kHeight = 600;
 #include <filesystem>
 
 // Shader sources
-const std::string kVertexShaderSource =
-    load_shader_source("shaders/vertex.glsl").c_str();
-const std::string kFragmentShaderSourceOrange =
-    load_shader_source("shaders/fragment_orange.glsl").c_str();
-const std::string kFragmentShaderSourceYellow =
-    load_shader_source("shaders/fragment_yellow.glsl").c_str();
+const std::string kVertexShaderRaw = load_shader_source("shaders/vertex.glsl");
+const std::string kFragmentShaderOrangeRaw =
+    load_shader_source("shaders/fragment_orange.glsl");
+const std::string kFragmentShaderYellowRaw =
+    load_shader_source("shaders/fragment_yellow.glsl");
+
+const char* kVertexShaderSource = kVertexShaderRaw.c_str();
+const char* kFragmentShaderOrangeSource = kFragmentShaderOrangeRaw.c_str();
+const char* kFragmentShaderYellowSource = kFragmentShaderYellowRaw.c_str();
 
 // Callback to resize viewport
 void framebuffer_size_callback(GLFWwindow* window, GLint width, GLint height) {
@@ -108,10 +111,10 @@ GLint main() {
                   sizeof(triangle_vertices_2));
 
   // Initialize shader programs
-  shader_program[0] = create_shader_program(
-      kVertexShaderSource.c_str(), kFragmentShaderSourceOrange.c_str());
-  shader_program[1] = create_shader_program(
-      kVertexShaderSource.c_str(), kFragmentShaderSourceYellow.c_str());
+  shader_program[0] =
+      create_shader_program(kVertexShaderSource, kFragmentShaderOrangeSource);
+  shader_program[1] =
+      create_shader_program(kVertexShaderSource, kFragmentShaderYellowSource);
 
   // Render loop
   while (!glfwWindowShouldClose(window)) {
