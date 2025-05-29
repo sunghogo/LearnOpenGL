@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+namespace graphics {
+
 // Initializes, compiles, validates a shader
 //
 // Args:
@@ -24,5 +26,6 @@ GLuint create_shader(GLuint shader_type, const GLchar* shader_source);
 //  Shader program ID
 GLuint create_shader_program(const GLchar* vertex_source,
                              const GLchar* fragment_source);
+}  // namespace graphics
 
 #endif

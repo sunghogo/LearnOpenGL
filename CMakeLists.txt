@@ -14,6 +14,16 @@ target_include_directories(glad PUBLIC external/glad/include)
 # GLFW
 add_subdirectory(external/glfw)
 
+# Custom graphics library
+file(GLOB_RECURSE GRAPHICS_SRC src/*.cpp)
+add_library(graphics ${GRAPHICS_SRC})
+target_include_directories(graphics
+    PUBLIC include
+)
+target_link_libraries(graphics
+  PUBLIC glad glfw
+)
+
 # -----------------------------------------------------------------------------
 # Macro to add subdirectory projects
 macro(add_all_subdirectories BASE_DIR)

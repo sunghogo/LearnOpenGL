@@ -1,20 +1,20 @@
-# Hello Triangle Project
+# Shaders Lesson Project
 
 # Collect all .cpp files in the src and shaders folders
 file(GLOB SRC_FILES src/*.cpp )
 file(GLOB SHADER_FILES shaders/*.cpp)
 
-add_executable(hello_triangle ${SRC_FILES} ${SHADER_FILES})
+add_executable(shaders_lesson ${SRC_FILES} ${SHADER_FILES})
 
 # Include headers
-target_include_directories(hello_triangle
+target_include_directories(shaders_lesson
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders
 )
 
 # Link external libraries
-target_link_libraries(hello_triangle
+target_link_libraries(shaders_lesson
     PRIVATE
         glad
         glfw
@@ -32,10 +32,10 @@ endforeach()
 
 # Platform-specific OpenGL linking
 if (WIN32)
-    target_link_libraries(hello_triangle PRIVATE opengl32)
+    target_link_libraries(shaders_lesson PRIVATE opengl32)
 elseif (APPLE)
     find_library(OpenGL_LIBRARY OpenGL REQUIRED)
-    target_link_libraries(hello_triangle PRIVATE ${OpenGL_LIBRARY})
+    target_link_libraries(shaders_lesson PRIVATE ${OpenGL_LIBRARY})
 else()
-    target_link_libraries(hello_triangle PRIVATE GL)
+    target_link_libraries(shaders_lesson PRIVATE GL)
 endif()

@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+namespace graphics {
 // Creates a triangle primitive at the given raw vertices. Mutates vao, vbo
 // referenced parameters with returned ids.
 //
@@ -28,5 +29,6 @@ void create_triangle(GLuint& vao, GLuint& vbo, GLfloat* vertices,
 //  indices_size: Size of indices in bytes
 void create_square(GLuint& vao, GLuint& vbo, GLuint& ebo, GLfloat* vertices,
                    size_t vertices_size, GLint* indices, size_t indices_size);
+}  // namespace graphics
 
 #endif

@@ -1,8 +1,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "shaders.h"
+#include <string>
+#include "graphics/shaders.h"
 
+namespace graphics {
 GLuint create_shader(GLuint shader_type, const GLchar* shader_source) {
   // Create shader
   GLuint shader = glCreateShader(shader_type);
@@ -12,7 +14,7 @@ GLuint create_shader(GLuint shader_type, const GLchar* shader_source) {
   glCompileShader(shader);
 
   // Resolve shader type name
-  GLchar* type_name;
+  const GLchar* type_name;
   switch (shader_type) {
     case (GL_VERTEX_SHADER):
       type_name = "VERTEX";
@@ -68,3 +70,4 @@ GLuint create_shader_program(const GLchar* vertex_source,
 
   return shader_program;
 }
+}  // namespace graphics
