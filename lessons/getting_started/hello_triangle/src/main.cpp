@@ -13,11 +13,11 @@ const GLint kWidth = 800, kHeight = 600;
 
 // Shader sources
 const std::string kVertexShaderRaw =
-    graphics::load_shader_source("shaders/vertex.glsl");
+    graphics::LoadShaderSource("shaders/vertex.glsl");
 const std::string kFragmentShaderOrangeRaw =
-    graphics::load_shader_source("shaders/fragment_orange.glsl");
+    graphics::LoadShaderSource("shaders/fragment_orange.glsl");
 const std::string kFragmentShaderYellowRaw =
-    graphics::load_shader_source("shaders/fragment_yellow.glsl");
+    graphics::LoadShaderSource("shaders/fragment_yellow.glsl");
 
 const char* kVertexShaderSource = kVertexShaderRaw.c_str();
 const char* kFragmentShaderOrangeSource = kFragmentShaderOrangeRaw.c_str();
@@ -99,18 +99,18 @@ GLint main() {
   };
 
   // Create shapes
-  graphics::create_square(vao[0], vbo[0], ebo, square_vertices,
-                          sizeof(square_vertices), square_indices,
-                          sizeof(square_indices));
-  graphics::create_triangle(vao[1], vbo[1], triangle_vertices_1,
-                            sizeof(triangle_vertices_1));
-  graphics::create_triangle(vao[2], vbo[2], triangle_vertices_2,
-                            sizeof(triangle_vertices_2));
+  graphics::CreateSquare(vao[0], vbo[0], ebo, square_vertices,
+                         sizeof(square_vertices), square_indices,
+                         sizeof(square_indices));
+  graphics::CreateTriangle(vao[1], vbo[1], triangle_vertices_1,
+                           sizeof(triangle_vertices_1));
+  graphics::CreateTriangle(vao[2], vbo[2], triangle_vertices_2,
+                           sizeof(triangle_vertices_2));
 
   // Initialize shader programs
-  shader_program[0] = graphics::create_shader_program(
+  shader_program[0] = graphics::CreateShaderProgram(
       kVertexShaderSource, kFragmentShaderOrangeSource);
-  shader_program[1] = graphics::create_shader_program(
+  shader_program[1] = graphics::CreateShaderProgram(
       kVertexShaderSource, kFragmentShaderYellowSource);
 
   // Render loop
@@ -118,9 +118,11 @@ GLint main() {
     process_input(window);
 
     glClear(GL_COLOR_BUFFER_BIT);
-    graphics::draw_square(shader_program[0], vao[0]);
-    graphics::draw_triangle(shader_program[0], vao[1]);
-    graphics::draw_triangle(shader_program[1], vao[2]);
+    glUseProgram(shader_program[0]);
+    graphics::DrawSquare(vao[0]);
+    graphics::DrawTriangle(vao[1]);
+    glUseProgram(shader_program[1]);
+    graphics::DrawTriangle(vao[2]);
 
     glfwPollEvents();
     glfwSwapBuffers(window);

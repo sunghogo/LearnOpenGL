@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 
-#include "graphics/shaders_util.h"
 #include "graphics/shaders.h"
 #include "graphics/create.h"
 #include "graphics/draw.h"
@@ -11,17 +10,9 @@
 // Window dimensions
 const GLint kWidth = 800, kHeight = 600;
 
-// Shader sources
-const std::string kVertexShaderRaw =
-    graphics::load_shader_source("shaders/vertex.glsl");
-const std::string kFragmentShaderOrangeRaw =
-    graphics::load_shader_source("shaders/fragment_orange.glsl");
-const std::string kFragmentShaderYellowRaw =
-    graphics::load_shader_source("shaders/fragment_yellow.glsl");
-
-const char* kVertexShaderSource = kVertexShaderRaw.c_str();
-const char* kFragmentShaderOrangeSource = kFragmentShaderOrangeRaw.c_str();
-const char* kFragmentShaderYellowSource = kFragmentShaderYellowRaw.c_str();
+// Shader file paths
+const GLchar* kVertexShaderPath = "shaders/vertex.glsl";
+const GLchar* kFragmentShaderPath = "shaders/fragment.glsl";
 
 // Callback to resize viewport
 void framebuffer_size_callback(GLFWwindow* window, GLint width, GLint height) {
@@ -45,8 +36,7 @@ GLint main() {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
   // Intialize window object
-  GLFWwindow* window =
-      glfwCreateWindow(kWidth, kHeight, "Hello Triangle", NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(kWidth, kHeight, "Shaders", NULL, NULL);
   if (window == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
     glfwTerminate();
@@ -69,58 +59,43 @@ GLint main() {
   // Initalize window to viewport resizing
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-  // Set to wireframe mode
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
   // Instantiade GL IDs
-  GLuint vao[3]{}, vbo[3]{}, ebo, shader_program[2];
+  GLuint vao, vbo, ebo;
 
-  // Initialize raw vertices and index data
-  GLfloat square_vertices[] = {
-      0.5f,  0.5f,  0.0f,  // top right
-      0.5f,  -0.5f, 0.0f,  // bottom right
-      -0.5f, -0.5f, 0.0f,  // bottom left
-      -0.5f, 0.5f,  0.0f   // top left
-  };
-  GLint square_indices[] = {
-      // note that we start from 0!
-      0, 1, 3,  // first triangle
-      1, 2, 3   // second triangle
-  };
-  GLfloat triangle_vertices_1[] = {
-      -0.5f,  0.5f, 0.0f,  // bottom left
-      0.0f,   0.5f, 0.0f,  // bottom right
-      -0.25f, 1.0f, 0.0f   // top
-  };
-  GLfloat triangle_vertices_2[] = {
-      0.5f,  0.5f, 0.0f,  // bottom right
-      0.0f,  0.5f, 0.0f,  // bottom left
-      0.25f, 1.0f, 0.0f   // top
+  // Initialize raw vertices data
+  GLfloat triangle_vertices[] = {
+      // positions        // colors
+      -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom left
+      0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // bottom right
+      0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f,  // top
   };
 
   // Create shapes
-  graphics::create_square(vao[0], vbo[0], ebo, square_vertices,
-                          sizeof(square_vertices), square_indices,
-                          sizeof(square_indices));
-  graphics::create_triangle(vao[1], vbo[1], triangle_vertices_1,
-                            sizeof(triangle_vertices_1));
-  graphics::create_triangle(vao[2], vbo[2], triangle_vertices_2,
-                            sizeof(triangle_vertices_2));
+  graphics::CreateTriangle(vao, vbo, triangle_vertices,
+                           sizeof(triangle_vertices), 2);
 
   // Initialize shader programs
-  shader_program[0] = graphics::create_shader_program(
-      kVertexShaderSource, kFragmentShaderOrangeSource);
-  shader_program[1] = graphics::create_shader_program(
-      kVertexShaderSource, kFragmentShaderYellowSource);
+  graphics::Shader shader =
+      graphics::Shader(kVertexShaderPath, kFragmentShaderPath);
+  shader.Use();
 
   // Render loop
   while (!glfwWindowShouldClose(window)) {
     process_input(window);
 
+    // Clear image
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    graphics::draw_square(shader_program[0], vao[0]);
-    graphics::draw_triangle(shader_program[0], vao[1]);
-    graphics::draw_triangle(shader_program[1], vao[2]);
+
+    // Change color over time
+    GLfloat time_value = glfwGetTime();
+    GLfloat x_offset = sin(time_value) / 2.0f;
+    shader.SetFloat("x_offset", x_offset);
+
+        // GLint vertex_color_location = shader.GetUniformLocation("vertex_color");
+    // glUniform4f(vertex_color_location, 0.0f, green_value, 0.0f, 1.0f);
+
+    graphics::DrawTriangle(vao);
 
     glfwPollEvents();
     glfwSwapBuffers(window);

@@ -3,17 +3,17 @@
 # Exit immediately on error
 set -e
 
-echo "🔄 Cleaning previous build..."
+echo "Cleaning previous build..."
 rm -rf build
 
-echo "📁 Creating build directory..."
+echo "Creating build directory..."
 mkdir build
 cd build
 
-echo "⚙️ Running CMake configuration..."
+echo "Running CMake configuration..."
 cmake .. -DCMAKE_VERBOSE_MAKEFILE=ON
 
-echo "🚧 Building project..."
+echo "Building project..."
 cmake --build .
 
-echo "✅ Build complete!"
+echo "Build complete!"

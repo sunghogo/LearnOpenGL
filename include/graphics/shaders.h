@@ -2,30 +2,41 @@
 #define SHADERS_H_
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <string>
 
 namespace graphics {
+// Manages a GLSL shader program.
+//
+// Loads vertex and fragment shaders from file paths, compiles them,
+// links them into a program, and provides utility functions to use
+// the program and set uniform variables.
+class Shader {
+ public:
+  // Constructs a Shader object from vertex and fragment shader file paths.
+  Shader(const GLchar* vertex_shader_path, const GLchar* fragment_shader_path);
 
-// Initializes, compiles, validates a shader
-//
-// Args:
-//  shader_type: GL defined shader macro
-//  shader_source: GLSL shader source code
-//
-// Returns:
-//  Shader ID
-GLuint create_shader(GLuint shader_type, const GLchar* shader_source);
+  // Destructor for Shader object.
+  ~Shader();
 
-// Creates shader program containing default vertex and fragment shaders.
-//
-// Args:
-//  vertex_source: GLSL vertex shader source file
-//  fragment_source: GLSL fragment shader source file
-//
-// Returns:
-//  Shader program ID
-GLuint create_shader_program(const GLchar* vertex_source,
-                             const GLchar* fragment_source);
+  // Activates the shader program for use.
+  void Use() const;
+
+  // Gets uniform location from shader.
+  GLint GetUniformLocation(const std::string& name) const;
+
+  // Sets a bool uniform.
+  void SetBool(const std::string& name, GLboolean value) const;
+
+  // Sets an int uniform.
+  void SetInt(const std::string& name, GLint value) const;
+
+  // Sets a float uniform.
+  void SetFloat(const std::string& name, GLfloat value) const;
+
+ private:
+  // OpenGL shader program ID.
+  GLuint id_;
+};
 }  // namespace graphics
 
 #endif

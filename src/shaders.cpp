@@ -3,71 +3,44 @@
 #include <iostream>
 #include <string>
 #include "graphics/shaders.h"
+#include "graphics/shaders_util.h"
 
 namespace graphics {
-GLuint create_shader(GLuint shader_type, const GLchar* shader_source) {
-  // Create shader
-  GLuint shader = glCreateShader(shader_type);
+Shader::Shader(const GLchar* vertex_shader_path,
+               const GLchar* fragment_shader_path) {
+  std::string vertex_shader_code =
+      graphics::LoadShaderSource(vertex_shader_path);
+  std::string fragment_shader_code =
+      graphics::LoadShaderSource(fragment_shader_path);
 
-  // Source and compile shader
-  glShaderSource(shader, 1, &shader_source, nullptr);
-  glCompileShader(shader);
+  const GLchar* vertex_shader_source = vertex_shader_code.c_str();
+  const GLchar* fragment_shader_source = fragment_shader_code.c_str();
 
-  // Resolve shader type name
-  const GLchar* type_name;
-  switch (shader_type) {
-    case (GL_VERTEX_SHADER):
-      type_name = "VERTEX";
-      break;
-    case (GL_FRAGMENT_SHADER):
-      type_name = "FRAGMENT";
-      break;
-    default:
-      type_name = "DEFAULT";
-      break;
-  }
-
-  // Validate shader
-  GLint success;
-  GLchar info_log[512];
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    glGetShaderInfoLog(shader, 512, nullptr, info_log);
-    std::cout << "ERROR::SHADER::" << type_name << "::COMPILATION_FAILED"
-              << info_log << std::endl;
-  }
-
-  return shader;
+  id_ = graphics::CreateShaderProgram(vertex_shader_source,
+                                      fragment_shader_source);
 }
 
-GLuint create_shader_program(const GLchar* vertex_source,
-                             const GLchar* fragment_source) {
-  // Create shader program
-  GLuint shader_program = glCreateProgram();
+Shader::~Shader() {
+  glDeleteProgram(id_);
+}
 
-  // Create vertex and fragment shaders
-  GLuint vertex_shader = create_shader(GL_VERTEX_SHADER, vertex_source);
-  GLuint fragment_shader = create_shader(GL_FRAGMENT_SHADER, fragment_source);
+void Shader::Use() const {
+  glUseProgram(id_);
+}
 
-  // Link shaders to shader program
-  glAttachShader(shader_program, vertex_shader);
-  glAttachShader(shader_program, fragment_shader);
-  glLinkProgram(shader_program);
+GLint Shader::GetUniformLocation(const std::string& name) const {
+  glGetUniformLocation(id_, name.c_str());
+}
 
-  // Validate shader program
-  GLint success_shader;
-  GLchar info_log_shader[512];
-  glGetProgramiv(shader_program, GL_LINK_STATUS, &success_shader);
-  if (!success_shader) {
-    glGetProgramInfoLog(shader_program, 512, nullptr, info_log_shader);
-    std::cout << "ERROR::SHADER_PROGRAM::LINKING_FAILED" << info_log_shader
-              << std::endl;
-  }
+void Shader::SetBool(const std::string& name, GLboolean value) const {
+  glUniform1i(glGetUniformLocation(id_, name.c_str()), (GLint)value);
+}
 
-  // Delete compiled shaders after linking
-  glDeleteShader(vertex_shader);
-  glDeleteShader(fragment_shader);
+void Shader::SetInt(const std::string& name, GLint value) const {
+  glUniform1i(glGetUniformLocation(id_, name.c_str()), value);
+}
 
-  return shader_program;
+void Shader::SetFloat(const std::string& name, GLfloat value) const {
+  glUniform1f(glGetUniformLocation(id_, name.c_str()), value);
 }
 }  // namespace graphics
